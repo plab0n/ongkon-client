@@ -7,7 +7,7 @@ let isMobile: boolean;
 export function paletteIconClick() {
     isMobile = window.matchMedia('(max-width:550px)').matches;
     if (isMobile) {
-        let paletteIcon: HTMLElement = document.getElementById('palette-icon');
+        let paletteIcon: HTMLElement = document.getElementById('palette-icon') as HTMLElement;
         if (paletteIcon) {
             paletteIcon.addEventListener('click', showPaletteIcon, false);
         }
@@ -15,7 +15,7 @@ export function paletteIconClick() {
 }
 
 export function showPaletteIcon(): void {
-    let paletteSpace: HTMLElement = document.getElementById('palette-space');
+    let paletteSpace: HTMLElement = document.getElementById('palette-space') as HTMLElement;
     isMobile = window.matchMedia('(max-width:550px)').matches;
     if (isMobile) {
         if (!paletteSpace.classList.contains('sb-mobile-palette-open')) {

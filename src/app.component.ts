@@ -33,9 +33,8 @@ Diagram.Inject(UndoRedo);
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent {
-  @ViewChild("diagram")
-  //Diagram Properties
-  public diagram: DiagramComponent;
+  //@ViewChild("diagram") 
+  //public diagram: DiagramComponent;
   constructor() {}
   //SymbolPalette Properties
   public symbolMargin: MarginModel = {
@@ -97,7 +96,9 @@ export class AppComponent {
   }
 
   public getSymbolDefaults(symbol: NodeModel): void {
-    symbol.style.strokeColor = "#757575";
+    if(symbol.style) {
+      symbol.style.strokeColor = "#757575";
+    }
     symbol.width = 100;
     symbol.height = 100;
   }
