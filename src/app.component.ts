@@ -33,8 +33,8 @@ Diagram.Inject(UndoRedo);
   encapsulation: ViewEncapsulation.None
 })
 export class AppComponent {
-  //@ViewChild("diagram") 
-  //public diagram: DiagramComponent;
+  @ViewChild("diagram")
+  public diagram: DiagramComponent;
   constructor() {}
   //SymbolPalette Properties
   public symbolMargin: MarginModel = {
@@ -101,5 +101,13 @@ export class AppComponent {
     }
     symbol.width = 100;
     symbol.height = 100;
+  }
+
+  onClick($event: any) {
+    console.log($event);
+  }
+
+  onDrop($event: any) {
+    console.log("Item Dropped: ", $event);
   }
 }
