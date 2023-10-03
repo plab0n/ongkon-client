@@ -22,7 +22,7 @@ import { ToolbarModule } from '@syncfusion/ej2-angular-navigations';
 
 import { NumericTextBoxModule, ColorPickerModule, UploaderModule, TextBoxModule } from '@syncfusion/ej2-angular-inputs';
 
-import { DropDownButtonModule } from '@syncfusion/ej2-angular-splitbuttons';
+import {DropDownButtonModule, SplitButtonModule} from '@syncfusion/ej2-angular-splitbuttons';
 
 import { ButtonModule, CheckBoxModule, RadioButtonModule } from '@syncfusion/ej2-angular-buttons';
 
@@ -37,7 +37,15 @@ import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { NgModule } from '@angular/core';
-import { AppComponent } from '../app.component';
-@NgModule({ declarations: [ AppComponent ], imports: [ DiagramAllModule, ChartAllModule, GridAllModule, SymbolPaletteAllModule, OverviewAllModule, ButtonModule,       ColorPickerModule,  DateRangePickerModule, CheckBoxModule, AccumulationChartModule, BrowserModule,ToolbarModule, DropDownButtonModule, UploaderModule, CircularGaugeModule, DropDownListAllModule, ListViewAllModule,       DialogAllModule, TextBoxModule, RadioButtonModule,       MultiSelectModule, NumericTextBoxModule, BrowserModule], providers: [], bootstrap: [AppComponent]
+import {AppComponent} from "./app.component";
+
+@NgModule({
+  declarations: [ AppComponent ],
+  imports: [ DiagramAllModule, ChartAllModule, GridAllModule, SymbolPaletteAllModule, OverviewAllModule, ButtonModule,
+    ColorPickerModule,  DateRangePickerModule, CheckBoxModule, AccumulationChartModule, BrowserModule,ToolbarModule,
+    DropDownButtonModule, UploaderModule, CircularGaugeModule, DropDownListAllModule, ListViewAllModule,
+    DialogAllModule, TextBoxModule, RadioButtonModule, MultiSelectModule, NumericTextBoxModule, BrowserModule, SplitButtonModule],
+  providers: [],
+  bootstrap: [AppComponent]
 })
 export class AppModule { }
