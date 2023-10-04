@@ -38,13 +38,16 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { NgModule } from '@angular/core';
 import {AppComponent} from "./app.component";
+import {HttpClient, HttpClientModule} from "@angular/common/http";
 
 @NgModule({
   declarations: [ AppComponent ],
   imports: [ DiagramAllModule, ChartAllModule, GridAllModule, SymbolPaletteAllModule, OverviewAllModule, ButtonModule,
     ColorPickerModule,  DateRangePickerModule, CheckBoxModule, AccumulationChartModule, BrowserModule,ToolbarModule,
     DropDownButtonModule, UploaderModule, CircularGaugeModule, DropDownListAllModule, ListViewAllModule,
-    DialogAllModule, TextBoxModule, RadioButtonModule, MultiSelectModule, NumericTextBoxModule, BrowserModule, SplitButtonModule],
+    DialogAllModule, TextBoxModule, RadioButtonModule, MultiSelectModule, NumericTextBoxModule, BrowserModule, SplitButtonModule,
+    HttpClientModule
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })

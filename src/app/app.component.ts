@@ -28,6 +28,10 @@ import { paletteIconClick } from "../script/diagram-common";
 import {ToolbarComponent} from "@syncfusion/ej2-angular-navigations";
 import {AsyncSettingsModel} from "@syncfusion/ej2-inputs";
 import {ClickEventArgs} from "@syncfusion/ej2-buttons";
+import {HttpClient} from "@angular/common/http";
+import {Configuration} from "../Config/Configuration";
+import {CreateWhiteBoardCommand} from "../Models/Commands";
+import {Router} from "@angular/router";
 Diagram.Inject(UndoRedo);
 
 /**
@@ -46,12 +50,15 @@ export class AppComponent implements OnInit, AfterViewInit{
   public diagram: DiagramComponent;
   @ViewChild('toolbar')
   public toolbar: ToolbarComponent;
-  constructor() {​​​​​​​
+  constructor(private httpClient: HttpClient,
+              private router: Router) {​​​​​​​
     //sourceFiles.files = ['../script/diagram-common.style.css'];
   }​​​​​​​
 
   ngOnInit(): void {
-
+    this.httpClient.post(Configuration.createEmptyWhiteBoardApi(), new CreateWhiteBoardCommand("N1")).subscribe(res => {
+      console.log(res);
+    });
   }
 
   ngAfterViewInit(): void {
