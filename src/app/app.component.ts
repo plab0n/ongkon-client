@@ -1,7 +1,7 @@
 import {Component, ViewEncapsulation, ViewChild, Inject, OnInit, AfterViewInit} from "@angular/core";
 import {
   ConnectorConstraints,
-  DiagramComponent, DiagramTools,
+  DiagramComponent, DiagramTools, IDropEventArgs,
   IExportOptions, IHistoryChangeArgs, ISelectionChangeEventArgs,
   NodeConstraints, ZoomOptions
 } from "@syncfusion/ej2-angular-diagrams";
@@ -30,8 +30,9 @@ import {AsyncSettingsModel} from "@syncfusion/ej2-inputs";
 import {ClickEventArgs} from "@syncfusion/ej2-buttons";
 import {HttpClient} from "@angular/common/http";
 import {Configuration} from "../Config/Configuration";
-import {CreateWhiteBoardCommand} from "../Models/Commands";
+import {AddNodeCommand, CreateWhiteBoardCommand} from "../Models/commands";
 import {Router} from "@angular/router";
+import {WhiteBoard} from "../Models/white-board";
 Diagram.Inject(UndoRedo);
 
 /**
@@ -50,20 +51,25 @@ export class AppComponent implements OnInit, AfterViewInit{
   public diagram: DiagramComponent;
   @ViewChild('toolbar')
   public toolbar: ToolbarComponent;
+  public whiteBoard: WhiteBoard;
   constructor(private httpClient: HttpClient,
               private router: Router) {​​​​​​​
     //sourceFiles.files = ['../script/diagram-common.style.css'];
   }​​​​​​​
 
   ngOnInit(): void {
-    this.httpClient.post(Configuration.createEmptyWhiteBoardApi(), new CreateWhiteBoardCommand("N1")).subscribe(res => {
-      console.log(res);
-    });
+    // this.httpClient.post(Configuration.createEmptyWhiteBoardApi(), new CreateWhiteBoardCommand("N1")).subscribe(res => {
+    //   console.log(res);
+    // });
+    this.getWhiteBoard('78d25841-f819-4507-a526-175cd6751cd2');
   }
-
+  getWhiteBoard(id: string) {
+    this.httpClient.get<WhiteBoard>(Configuration.GetWhiteBoardApi(id)).subscribe(res => {
+      this.whiteBoard = res;
+    })
+  }
   ngAfterViewInit(): void {
-
-    }
+  }
   public terminator: FlowShapeModel = { type: 'Flow', shape: 'Terminator' };
   public process: FlowShapeModel = { type: 'Flow', shape: 'Process' };
   public decision: FlowShapeModel = { type: 'Flow', shape: 'Decision' };
@@ -673,6 +679,20 @@ export class AppComponent implements OnInit, AfterViewInit{
 
   public diagramCreate(args: Object): void {
     paletteIconClick();
+  }
+
+  onDropSymbol($event: IDropEventArgs) {
+    if($event.element instanceof Node) {
+      var addNodeCommand = new AddNodeCommand();
+      addNodeCommand.whiteBoardId = this.whiteBoard.id;
+      addNodeCommand.height = $event.element.height;
+      addNodeCommand.width = $event.element.width;
+      addNodeCommand.position = $event.position;
+      addNodeCommand.shape = {type: $event.element.shape.type, shape: ($event.element.shape as FlowShapeModel).shape};
+      this.httpClient.post(Configuration.AddNodeApi(), addNodeCommand).subscribe(res => {
+        this.getWhiteBoard(this.whiteBoard.id);
+      });
+    }
   }
 }
 
