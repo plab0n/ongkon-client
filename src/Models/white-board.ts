@@ -6,6 +6,7 @@ export class Node {
   public position: Point;
   public width: number;
   public height: number;
+  public text: string;
 }
 
 export class WhiteBoard {

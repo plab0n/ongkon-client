@@ -99,11 +99,13 @@
         <ejs-diagram #diagram id="diagram" width="100%" height="700px" [snapSettings]='snapSettings'
                      (created)="created()" [getConnectorDefaults]='connDefaults' [getNodeDefaults]='nodeDefaults' (dragEnter)="dragEnter($event)"
                      (created)="diagramCreate($event)" (selectionChange)="selectionChange($event)" (historyChange)="historyChange($event)" (drop)="onDropSymbol($event)"
-                     [drawingObject] ="drawingObject">
+                     [drawingObject] ="drawingObject" (textEdit)="onTextEdit($event)" (collectionChange)="onCollectionChange($event)"
+        >
           <e-nodes *ngIf="whiteBoard">
-            <e-node *ngFor="let node of whiteBoard?.nodes" [height]='node.height' [offsetX]='node.position.x' [offsetY]='node.position.y' [shape]='node.shape'>
+            <e-node *ngFor="let node of whiteBoard?.nodes" [height]='node.height' [width]='node.width' [offsetX]='node.position.x'
+                    [offsetY]='node.position.y' [shape]='node.shape' id="{{node.id}}">
               <e-node-annotations>
-                <e-node-annotation content='Place Order'>
+                <e-node-annotation content='{{node.text}}'>
                 </e-node-annotation>
               </e-node-annotations>
             </e-node>

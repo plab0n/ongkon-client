@@ -1,8 +1,8 @@
 import {Component, ViewEncapsulation, ViewChild, Inject, OnInit, AfterViewInit} from "@angular/core";
 import {
   ConnectorConstraints,
-  DiagramComponent, DiagramTools, IDropEventArgs,
-  IExportOptions, IHistoryChangeArgs, ISelectionChangeEventArgs,
+  DiagramComponent, DiagramTools, ICollectionChangeEventArgs, IDropEventArgs,
+  IExportOptions, IHistoryChangeArgs, ISelectionChangeEventArgs, ITextEditEventArgs,
   NodeConstraints, ZoomOptions
 } from "@syncfusion/ej2-angular-diagrams";
 import {
@@ -30,7 +30,7 @@ import {AsyncSettingsModel} from "@syncfusion/ej2-inputs";
 import {ClickEventArgs} from "@syncfusion/ej2-buttons";
 import {HttpClient} from "@angular/common/http";
 import {Configuration} from "../Config/Configuration";
-import {AddNodeCommand, CreateWhiteBoardCommand} from "../Models/commands";
+import {AddNodeAnnotationCommand, AddNodeCommand, CreateWhiteBoardCommand} from "../Models/commands";
 import {Router} from "@angular/router";
 import {WhiteBoard} from "../Models/white-board";
 Diagram.Inject(UndoRedo);
@@ -66,6 +66,7 @@ export class AppComponent implements OnInit, AfterViewInit{
   getWhiteBoard(id: string) {
     this.httpClient.get<WhiteBoard>(Configuration.GetWhiteBoardApi(id)).subscribe(res => {
       this.whiteBoard = res;
+      this.addNodeAnnotations();
     })
   }
   ngAfterViewInit(): void {
@@ -95,6 +96,7 @@ export class AppComponent implements OnInit, AfterViewInit{
       node.width = 145;
     }
     node.style = { fill: '#357BD2', strokeColor: 'white' };
+
     if(node.annotations) {
       for (let i:number = 0; i < node.annotations.length; i++) {
         node.annotations[i].style = {
@@ -113,7 +115,27 @@ export class AppComponent implements OnInit, AfterViewInit{
   }
   public created(): void {
     this.diagram.fitToPage();
+    //this.addNodeAnnotations();
   }
+
+  private addNodeAnnotations() {
+    //NeedToChangeThis
+    setTimeout(() => {
+      console.log("triggered");
+      if (this.whiteBoard) {
+        for (let node of this.whiteBoard.nodes) {
+          if (node.text) {
+            const annotation = [{
+              content: node.text
+            }];
+            const nodeModel = this.diagram.nodes.find(o => o.id === node.id);
+            this.diagram.addNodeLabels(nodeModel, annotation);
+          }
+        }
+      }
+    }, 100);
+  }
+
   public interval: number[] = [
     1, 9, 0.25, 9.75, 0.25, 9.75, 0.25, 9.75, 0.25, 9.75, 0.25,
     9.75, 0.25, 9.75, 0.25, 9.75, 0.25, 9.75, 0.25, 9.75
@@ -693,6 +715,26 @@ export class AppComponent implements OnInit, AfterViewInit{
         this.getWhiteBoard(this.whiteBoard.id);
       });
     }
+  }
+
+  onTextEdit($event: ITextEditEventArgs) {
+    if($event.element instanceof Node) {
+      const command = new AddNodeAnnotationCommand();
+      command.whiteBoardId = this.whiteBoard.id;
+      command.nodeId = $event.element.id;
+      command.text = $event.newValue;
+      this.httpClient.post(Configuration.getAddAnnotationApi(), command).subscribe(res => {
+        this.getWhiteBoard(this.whiteBoard.id);
+      });
+    }
+  }
+
+  onDataLoaded($event: any) {
+    this.addNodeAnnotations();
+  }
+
+  onCollectionChange($event: ICollectionChangeEventArgs) {
+    console.log('CollectionChange: ', $event);
   }
 }
 

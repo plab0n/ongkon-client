@@ -1,6 +1,5 @@
-import {FlowShapeModel, PointModel} from "@syncfusion/ej2-diagrams";
-
-export class CreateWhiteBoardCommand {
+import { PointModel} from "@syncfusion/ej2-diagrams";
+export class CreateWhiteBoardCommand{
   title: string;
   constructor(title: string) {
     this.title = title;
@@ -13,4 +12,9 @@ export class AddNodeCommand {
   position: PointModel;
   public width: number;
   public height: number;
+}
+export class AddNodeAnnotationCommand {
+  whiteBoardId: string;
+  nodeId: string;
+  text: string;
 }

@@ -12,4 +12,8 @@ export class Configuration {
   static AddNodeApi() {
     return environment.ongkonApi + "/WhiteBoard/Node/Add";
   }
+
+  static getAddAnnotationApi() {
+    return environment.ongkonApi + "/WhiteBoard/Node/AddAnnotation";
+  }
 }
