@@ -30,7 +30,12 @@ import {AsyncSettingsModel} from "@syncfusion/ej2-inputs";
 import {ClickEventArgs} from "@syncfusion/ej2-buttons";
 import {HttpClient} from "@angular/common/http";
 import {Configuration} from "../Config/Configuration";
-import {AddNodeAnnotationCommand, AddNodeCommand, CreateWhiteBoardCommand} from "../Models/commands";
+import {
+  AddConnectorCommand,
+  AddNodeAnnotationCommand,
+  AddNodeCommand,
+  CreateWhiteBoardCommand
+} from "../Models/commands";
 import {Router} from "@angular/router";
 import {WhiteBoard} from "../Models/white-board";
 Diagram.Inject(UndoRedo);
@@ -711,7 +716,17 @@ export class AppComponent implements OnInit, AfterViewInit{
       addNodeCommand.width = $event.element.width;
       addNodeCommand.position = $event.position;
       addNodeCommand.shape = {type: $event.element.shape.type, shape: ($event.element.shape as FlowShapeModel).shape};
-      this.httpClient.post(Configuration.AddNodeApi(), addNodeCommand).subscribe(res => {
+      this.httpClient.post(Configuration.addNodeApi(), addNodeCommand).subscribe(res => {
+        this.getWhiteBoard(this.whiteBoard.id);
+      });
+    }
+    if($event.element instanceof Connector) {
+      var addConnectorCommand = new AddConnectorCommand();
+      addConnectorCommand.whiteBoardId = this.whiteBoard.id;
+      addConnectorCommand.type = $event.element.type;
+      addConnectorCommand.sourcePoint = {x: $event.element.sourcePoint.x, y: $event.element.sourcePoint.y};
+      addConnectorCommand.targetPoint = {x: $event.element.targetPoint.x, y: $event.element.targetPoint.y};
+      this.httpClient.post(Configuration.addConnectorApi(), addConnectorCommand).subscribe(res => {
         this.getWhiteBoard(this.whiteBoard.id);
       });
     }

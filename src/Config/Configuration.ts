@@ -9,11 +9,15 @@ export class Configuration {
     return environment.ongkonApi + "/WhiteBoard?id=" + id;
   }
 
-  static AddNodeApi() {
+  static addNodeApi() {
     return environment.ongkonApi + "/WhiteBoard/Node/Add";
   }
 
   static getAddAnnotationApi() {
     return environment.ongkonApi + "/WhiteBoard/Node/AddAnnotation";
+  }
+
+  static addConnectorApi() {
+    return environment.ongkonApi + "/WhiteBoard/Connector/Add"
   }
 }
