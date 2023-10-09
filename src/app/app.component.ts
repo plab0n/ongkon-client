@@ -147,8 +147,8 @@ export class AppComponent implements OnInit, AfterViewInit{
   ];
 
   public snapSettings: SnapSettingsModel = {
-    horizontalGridlines: { lineColor: '#e0e0e0', lineIntervals: this.interval },
-    verticalGridlines: { lineColor: '#e0e0e0', lineIntervals: this.interval }
+    horizontalGridlines: { lineColor: '#fffff', lineIntervals: this.interval },
+    verticalGridlines: { lineColor: '#fffff', lineIntervals: this.interval }
   };
 
   public dragEnter(args: IDragEnterEventArgs): void {
