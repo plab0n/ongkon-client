@@ -20,4 +20,8 @@ export class Configuration {
   static addConnectorApi() {
     return environment.ongkonApi + "/WhiteBoard/Connector/Add"
   }
+
+  static getUpdateSourcePointEndpoint() {
+    return environment.ongkonApi + "/WhiteBoard/Connector/Update/SourcePoint"
+  }
 }

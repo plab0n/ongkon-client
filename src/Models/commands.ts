@@ -27,3 +27,9 @@ export class AddConnectorCommand {
   //targetDecorator: DecoratorModel;
 
 }
+export class UpdateConnectorSourcePointCommand {
+  whiteBoardId: string;
+  connectorId: string;
+  sourcePoint: PointModel;
+
+}

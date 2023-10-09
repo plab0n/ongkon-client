@@ -1,7 +1,7 @@
 import {Component, ViewEncapsulation, ViewChild, Inject, OnInit, AfterViewInit} from "@angular/core";
 import {
   ConnectorConstraints,
-  DiagramComponent, DiagramTools, ICollectionChangeEventArgs, IDropEventArgs,
+  DiagramComponent, DiagramTools, ICollectionChangeEventArgs, IDropEventArgs, IEndChangeEventArgs,
   IExportOptions, IHistoryChangeArgs, ISelectionChangeEventArgs, ITextEditEventArgs,
   NodeConstraints, ZoomOptions
 } from "@syncfusion/ej2-angular-diagrams";
@@ -34,10 +34,12 @@ import {
   AddConnectorCommand,
   AddNodeAnnotationCommand,
   AddNodeCommand,
-  CreateWhiteBoardCommand
+  CreateWhiteBoardCommand, UpdateConnectorSourcePointCommand
 } from "../Models/commands";
 import {Router} from "@angular/router";
 import {WhiteBoard} from "../Models/white-board";
+import {debounce, interval, Observable, Subject} from "rxjs";
+import {debounceTime, distinctUntilChanged, last, takeLast} from "rxjs/operators";
 Diagram.Inject(UndoRedo);
 
 /**
@@ -57,6 +59,8 @@ export class AppComponent implements OnInit, AfterViewInit{
   @ViewChild('toolbar')
   public toolbar: ToolbarComponent;
   public whiteBoard: WhiteBoard;
+  sourcePointChangedEvent$ = new Subject<IEndChangeEventArgs>();
+
   constructor(private httpClient: HttpClient,
               private router: Router) {​​​​​​​
     //sourceFiles.files = ['../script/diagram-common.style.css'];
@@ -67,6 +71,15 @@ export class AppComponent implements OnInit, AfterViewInit{
     //   console.log(res);
     // });
     this.getWhiteBoard('78d25841-f819-4507-a526-175cd6751cd2');
+    this.sourcePointChangedEvent$.pipe(debounceTime(1000)).subscribe((event: IEndChangeEventArgs) => {
+      const command = new UpdateConnectorSourcePointCommand();
+      command.whiteBoardId = this.whiteBoard.id;
+      command.connectorId = event.connector.id;
+      command.sourcePoint = event.newValue;
+      this.httpClient.post(Configuration.getUpdateSourcePointEndpoint(), command).subscribe(res => {
+
+      });
+    });
   }
   getWhiteBoard(id: string) {
     this.httpClient.get<WhiteBoard>(Configuration.GetWhiteBoardApi(id)).subscribe(res => {
@@ -750,6 +763,10 @@ export class AppComponent implements OnInit, AfterViewInit{
 
   onCollectionChange($event: ICollectionChangeEventArgs) {
     console.log('CollectionChange: ', $event);
+  }
+  onSourcePointChange($event: IEndChangeEventArgs) {
+    this.sourcePointChangedEvent$.next($event);
+    this.sourcePointChangedEvent$.complete();
   }
 }
 
