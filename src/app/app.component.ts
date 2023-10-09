@@ -71,7 +71,7 @@ export class AppComponent implements OnInit, AfterViewInit{
     //   console.log(res);
     // });
     this.getWhiteBoard('78d25841-f819-4507-a526-175cd6751cd2');
-    this.sourcePointChangedEvent$.pipe(debounceTime(1000)).subscribe((event: IEndChangeEventArgs) => {
+    this.sourcePointChangedEvent$.pipe(debounceTime(3000)).subscribe((event: IEndChangeEventArgs) => {
       const command = new UpdateConnectorSourcePointCommand();
       command.whiteBoardId = this.whiteBoard.id;
       command.connectorId = event.connector.id;
@@ -766,7 +766,6 @@ export class AppComponent implements OnInit, AfterViewInit{
   }
   onSourcePointChange($event: IEndChangeEventArgs) {
     this.sourcePointChangedEvent$.next($event);
-    this.sourcePointChangedEvent$.complete();
   }
 }
 

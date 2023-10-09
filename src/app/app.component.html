@@ -111,7 +111,9 @@
             </e-node>
           </e-nodes>
           <e-connectors>
-            <e-connector id='connector3' sourceID='BoardDecision' targetID='Project'>
+            <e-connector *ngFor="let connector of whiteBoard.connectors" id='{{connector.id}}'
+                         [sourcePoint]="{x: connector.sourcePoint.x, y: connector.sourcePoint.y}"
+                         [targetPoint]="{x: connector.targetPoint.x, y: connector.targetPoint.y}">
             </e-connector>
 <!--            <e-connector id='connector4' sourceID='Project' targetID='End'>-->
 <!--              <e-connector-annotations>-->
