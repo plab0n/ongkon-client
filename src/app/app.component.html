@@ -5,7 +5,7 @@
   }
 
 </style>
-<div class="control-section">
+<div *ngIf="whiteBoard"  class="control-section">
   <div style="width: 100%">
     <ejs-toolbar #toolbar overflowMode='Scrollable' id="toolbar_scrollable" (clicked) = "clicked($event)">
       <e-items>
@@ -96,12 +96,23 @@
     </div>
     <div id="diagram-space" class="sb-mobile-diagram">
       <div class="content-wrapper">
-        <ejs-diagram #diagram id="diagram" width="100%" height="700px" [snapSettings]='snapSettings' (sourcePointChange)="onSourcePointChange($event)"
-                     (created)="created()" [getConnectorDefaults]='connDefaults' [getNodeDefaults]='nodeDefaults' (dragEnter)="dragEnter($event)"
-                     (created)="diagramCreate($event)" (selectionChange)="selectionChange($event)" (historyChange)="historyChange($event)" (drop)="onDropSymbol($event)"
-                     [drawingObject] ="drawingObject" (textEdit)="onTextEdit($event)" (collectionChange)="onCollectionChange($event)"
+        <ejs-diagram #diagram id="diagram" width="100%" height="700px" [snapSettings]='snapSettings'
+                     (sourcePointChange)="onSourcePointChange($event)"
+                     (created)="created()"
+                     [getConnectorDefaults]='connDefaults'
+                     [getNodeDefaults]='nodeDefaults'
+                     (dragEnter)="dragEnter($event)"
+                     (positionChange)="onPositionChange($event)"
+                     (created)="diagramCreate($event)"
+                     (selectionChange)="selectionChange($event)"
+                     (historyChange)="historyChange($event)"
+                     (drop)="onDropSymbol($event)"
+                     [drawingObject] ="drawingObject"
+                     (textEdit)="onTextEdit($event)"
+                     (mouseOver)="onMouseOver($event)"
+                     (mouseLeave)="onMouseLeave($event)"
         >
-          <e-nodes *ngIf="whiteBoard">
+          <e-nodes>
             <e-node *ngFor="let node of whiteBoard?.nodes" [height]='node.height' [width]='node.width' [offsetX]='node.position.x'
                     [offsetY]='node.position.y' [shape]='node.shape' id="{{node.id}}">
               <e-node-annotations>
@@ -111,9 +122,9 @@
             </e-node>
           </e-nodes>
           <e-connectors>
-            <e-connector *ngFor="let connector of whiteBoard.connectors" id='{{connector.id}}'
-                         [sourcePoint]="{x: connector.sourcePoint.x, y: connector.sourcePoint.y}"
-                         [targetPoint]="{x: connector.targetPoint.x, y: connector.targetPoint.y}">
+            <e-connector *ngFor="let connector of whiteBoard.connectors" [sourcePoint]="{x: connector.sourcePoint.x, y: connector.sourcePoint.y}"
+                         [targetPoint]="{x: connector.targetPoint.x, y: connector.targetPoint.y}"
+                         id='{{connector.id}}'>
             </e-connector>
 <!--            <e-connector id='connector4' sourceID='Project' targetID='End'>-->
 <!--              <e-connector-annotations>-->

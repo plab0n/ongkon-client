@@ -31,5 +31,9 @@ export class UpdateConnectorSourcePointCommand {
   whiteBoardId: string;
   connectorId: string;
   sourcePoint: PointModel;
-
+}
+export class UpdateNodePositionCommand {
+  whiteBoardId: string;
+  nodeId: string;
+  position: PointModel;
 }

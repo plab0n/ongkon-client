@@ -1,9 +1,22 @@
 import {Component, ViewEncapsulation, ViewChild, Inject, OnInit, AfterViewInit} from "@angular/core";
 import {
   ConnectorConstraints,
-  DiagramComponent, DiagramTools, ICollectionChangeEventArgs, IDropEventArgs, IEndChangeEventArgs,
-  IExportOptions, IHistoryChangeArgs, ISelectionChangeEventArgs, ITextEditEventArgs,
-  NodeConstraints, ZoomOptions
+  DiagramClickEventObject,
+  DiagramComponent,
+  DiagramMouseEventObject,
+  DiagramTools,
+  ICollectionChangeEventArgs,
+  IDraggingEventArgs,
+  IDropEventArgs, IElement,
+  IEndChangeEventArgs,
+  IExportOptions,
+  IHistoryChangeArgs,
+  IPropertyChangeEventArgs,
+  ISelectionChangeEventArgs,
+  ITextEditEventArgs,
+  NodeConstraints,
+  SelectorModel,
+  ZoomOptions
 } from "@syncfusion/ej2-angular-diagrams";
 import {
   Diagram,
@@ -34,7 +47,7 @@ import {
   AddConnectorCommand,
   AddNodeAnnotationCommand,
   AddNodeCommand,
-  CreateWhiteBoardCommand, UpdateConnectorSourcePointCommand
+  CreateWhiteBoardCommand, UpdateConnectorSourcePointCommand, UpdateNodePositionCommand
 } from "../Models/commands";
 import {Router} from "@angular/router";
 import {WhiteBoard} from "../Models/white-board";
@@ -60,6 +73,9 @@ export class AppComponent implements OnInit, AfterViewInit{
   public toolbar: ToolbarComponent;
   public whiteBoard: WhiteBoard;
   sourcePointChangedEvent$ = new Subject<IEndChangeEventArgs>();
+  nodePositionChangedEvent$ = new Subject<IDraggingEventArgs>();
+  connectorPositionChangedEvent$ = new Subject<IDraggingEventArgs>();
+  private currentSelection: SelectorModel | Diagram | DiagramClickEventObject | Object | DiagramMouseEventObject | NodeModel | IElement;
 
   constructor(private httpClient: HttpClient,
               private router: Router) {​​​​​​​
@@ -70,8 +86,8 @@ export class AppComponent implements OnInit, AfterViewInit{
     // this.httpClient.post(Configuration.createEmptyWhiteBoardApi(), new CreateWhiteBoardCommand("N1")).subscribe(res => {
     //   console.log(res);
     // });
-    this.getWhiteBoard('78d25841-f819-4507-a526-175cd6751cd2');
-    this.sourcePointChangedEvent$.pipe(debounceTime(3000)).subscribe((event: IEndChangeEventArgs) => {
+    this.getWhiteBoard('47866f90-db3e-419c-9137-d8a8ee02f971');
+    this.sourcePointChangedEvent$.pipe(debounceTime(500)).subscribe((event: IEndChangeEventArgs) => {
       const command = new UpdateConnectorSourcePointCommand();
       command.whiteBoardId = this.whiteBoard.id;
       command.connectorId = event.connector.id;
@@ -85,6 +101,7 @@ export class AppComponent implements OnInit, AfterViewInit{
     this.httpClient.get<WhiteBoard>(Configuration.GetWhiteBoardApi(id)).subscribe(res => {
       this.whiteBoard = res;
       this.addNodeAnnotations();
+      this.zoomContent();
     })
   }
   ngAfterViewInit(): void {
@@ -661,7 +678,9 @@ export class AppComponent implements OnInit, AfterViewInit{
   }
   public zoomContent()
   {
-    return Math.round(this.diagram.scrollSettings.currentZoom!*100) + ' %'
+    if(this.diagram)
+      return Math.round(this.diagram.scrollSettings.currentZoom!*100) + ' %'
+    return "";
   };
   public printDiagram(args : any){
     var options : IExportOptions = {};
@@ -766,6 +785,28 @@ export class AppComponent implements OnInit, AfterViewInit{
   }
   onSourcePointChange($event: IEndChangeEventArgs) {
     this.sourcePointChangedEvent$.next($event);
+  }
+
+  onPositionChange($event: IDraggingEventArgs) {
+    console.log("Event: ", $event);
+    if($event.state === 'Completed') {
+      if(this.currentSelection && this.currentSelection instanceof Node) {
+        const command = new UpdateNodePositionCommand();
+        command.nodeId = this.currentSelection.id;
+        command.whiteBoardId = this.whiteBoard.id;
+        command.position = {x: $event.newValue.offsetX, y: $event.newValue.offsetY}
+        this.httpClient.post(Configuration.updateNodePositionApi(), command).subscribe(res => {
+
+        });
+      }
+    }
+  }
+  onMouseOver($event: any) {
+    this.currentSelection = $event.actualObject;
+  }
+
+  onMouseLeave($event: any) {
+    this.currentSelection = null;
   }
 }
 
