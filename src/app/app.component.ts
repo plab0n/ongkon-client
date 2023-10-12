@@ -47,7 +47,11 @@ import {
   AddConnectorCommand,
   AddNodeAnnotationCommand,
   AddNodeCommand,
-  CreateWhiteBoardCommand, UpdateConnectorSourcePointCommand, UpdateNodePositionCommand
+  CreateWhiteBoardCommand,
+  UpdateConnectorPositionCommand,
+  UpdateConnectorSourcePointCommand,
+  UpdateConnectorTargetPointCommand,
+  UpdateNodePositionCommand
 } from "../Models/commands";
 import {Router} from "@angular/router";
 import {WhiteBoard} from "../Models/white-board";
@@ -73,6 +77,7 @@ export class AppComponent implements OnInit, AfterViewInit{
   public toolbar: ToolbarComponent;
   public whiteBoard: WhiteBoard;
   sourcePointChangedEvent$ = new Subject<IEndChangeEventArgs>();
+  targetPointChangedEvent$ = new Subject<IEndChangeEventArgs>();
   nodePositionChangedEvent$ = new Subject<IDraggingEventArgs>();
   connectorPositionChangedEvent$ = new Subject<IDraggingEventArgs>();
   private currentSelection: SelectorModel | Diagram | DiagramClickEventObject | Object | DiagramMouseEventObject | NodeModel | IElement;
@@ -93,6 +98,15 @@ export class AppComponent implements OnInit, AfterViewInit{
       command.connectorId = event.connector.id;
       command.sourcePoint = event.newValue;
       this.httpClient.post(Configuration.getUpdateSourcePointEndpoint(), command).subscribe(res => {
+
+      });
+    });
+    this.targetPointChangedEvent$.pipe(debounceTime(500)).subscribe((event: IEndChangeEventArgs) => {
+      const command = new UpdateConnectorTargetPointCommand();
+      command.whiteBoardId = this.whiteBoard.id;
+      command.connectorId = event.connector.id;
+      command.targetPoint = event.newValue;
+      this.httpClient.post(Configuration.getUpdateTargetPointEndpoint(), command).subscribe(res => {
 
       });
     });
@@ -799,6 +813,16 @@ export class AppComponent implements OnInit, AfterViewInit{
 
         });
       }
+      if(this.currentSelection && this.currentSelection instanceof Connector) {
+        const command = new UpdateConnectorPositionCommand();
+        command.connectorId = this.currentSelection.id;
+        command.whiteBoardId = this.whiteBoard.id;
+        command.targetPoint = {x: this.currentSelection.targetPoint.x, y: this.currentSelection.targetPoint.y};
+        command.sourcePoint = {x: this.currentSelection.sourcePoint.x, y: this.currentSelection.sourcePoint.y};
+        this.httpClient.post(Configuration.updateConnectorPositionApi(), command).subscribe(res => {
+
+        });
+      }
     }
   }
   onMouseOver($event: any) {
@@ -807,6 +831,10 @@ export class AppComponent implements OnInit, AfterViewInit{
 
   onMouseLeave($event: any) {
     this.currentSelection = null;
+  }
+
+  onTargetPointChange($event: IEndChangeEventArgs) {
+    this.targetPointChangedEvent$.next($event);
   }
 }
 

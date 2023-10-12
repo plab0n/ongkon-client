@@ -24,8 +24,16 @@ export class Configuration {
   static getUpdateSourcePointEndpoint() {
     return environment.ongkonApi + "/WhiteBoard/Connector/Update/SourcePoint"
   }
-
+  static getUpdateTargetPointEndpoint() {
+    return environment.ongkonApi + "/WhiteBoard/Connector/Update/TargetPoint";
+  }
   static updateNodePositionApi() {
     return environment.ongkonApi + "/WhiteBoard/Node/Update/Position";
   }
+
+  static updateConnectorPositionApi() {
+    return environment.ongkonApi + "/WhiteBoard/Connector/Update/Position";
+  }
+
+
 }

@@ -1,4 +1,4 @@
-import {DecoratorModel, PointModel, StrokeStyleModel} from "@syncfusion/ej2-diagrams";
+import {DecoratorModel, PointModel, StrokeStyleModel, Point} from "@syncfusion/ej2-diagrams";
 export class CreateWhiteBoardCommand{
   title: string;
   constructor(title: string) {
@@ -32,8 +32,19 @@ export class UpdateConnectorSourcePointCommand {
   connectorId: string;
   sourcePoint: PointModel;
 }
+export class UpdateConnectorTargetPointCommand {
+  whiteBoardId: string;
+  connectorId: string;
+  targetPoint: PointModel;
+}
 export class UpdateNodePositionCommand {
   whiteBoardId: string;
   nodeId: string;
   position: PointModel;
+}
+export class UpdateConnectorPositionCommand {
+  whiteBoardId: string;
+  connectorId: string;
+  sourcePoint: any;
+  targetPoint: any;
 }
