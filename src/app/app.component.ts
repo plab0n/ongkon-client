@@ -7,15 +7,15 @@ import {
   DiagramTools,
   ICollectionChangeEventArgs,
   IDraggingEventArgs,
-  IDropEventArgs, IElement,
+  IDropEventArgs, IElement, IElementDrawEventArgs,
   IEndChangeEventArgs,
   IExportOptions,
   IHistoryChangeArgs,
   IPropertyChangeEventArgs,
   ISelectionChangeEventArgs,
   ITextEditEventArgs,
-  NodeConstraints,
-  SelectorModel,
+  NodeConstraints, PointModel,
+  SelectorModel, Shape,
   ZoomOptions
 } from "@syncfusion/ej2-angular-diagrams";
 import {
@@ -57,6 +57,7 @@ import {Router} from "@angular/router";
 import {WhiteBoard} from "../Models/white-board";
 import {debounce, interval, Observable, Subject} from "rxjs";
 import {debounceTime, distinctUntilChanged, last, takeLast} from "rxjs/operators";
+import {Position} from "@syncfusion/ej2-base";
 Diagram.Inject(UndoRedo);
 
 /**
@@ -91,7 +92,7 @@ export class AppComponent implements OnInit, AfterViewInit{
     // this.httpClient.post(Configuration.createEmptyWhiteBoardApi(), new CreateWhiteBoardCommand("N1")).subscribe(res => {
     //   console.log(res);
     // });
-    this.getWhiteBoard('47866f90-db3e-419c-9137-d8a8ee02f971');
+    this.getWhiteBoard('37a48b71-5457-4650-815b-ff2ffec71f58');
     this.sourcePointChangedEvent$.pipe(debounceTime(500)).subscribe((event: IEndChangeEventArgs) => {
       const command = new UpdateConnectorSourcePointCommand();
       command.whiteBoardId = this.whiteBoard.id;
@@ -163,8 +164,9 @@ export class AppComponent implements OnInit, AfterViewInit{
     }
   }
   public created(): void {
-    this.diagram.fitToPage();
-    //this.addNodeAnnotations();
+    this.diagram.pageSettings.fitOptions.canFit = false;
+    this.diagram.fitToPage({canZoomIn: false, mode: "Height", margin: {bottom: 0, left:0, top:0, right: 0}});
+    this.addNodeAnnotations();
   }
 
   private addNodeAnnotations() {
@@ -756,15 +758,7 @@ export class AppComponent implements OnInit, AfterViewInit{
 
   onDropSymbol($event: IDropEventArgs) {
     if($event.element instanceof Node) {
-      var addNodeCommand = new AddNodeCommand();
-      addNodeCommand.whiteBoardId = this.whiteBoard.id;
-      addNodeCommand.height = $event.element.height;
-      addNodeCommand.width = $event.element.width;
-      addNodeCommand.position = $event.position;
-      addNodeCommand.shape = {type: $event.element.shape.type, shape: ($event.element.shape as FlowShapeModel).shape};
-      this.httpClient.post(Configuration.addNodeApi(), addNodeCommand).subscribe(res => {
-        this.getWhiteBoard(this.whiteBoard.id);
-      });
+      this.createNode($event.element.height, $event.element.width, $event.position, {type: $event.element.shape.type, shape: ($event.element.shape as FlowShapeModel).shape});
     }
     if($event.element instanceof Connector) {
       var addConnectorCommand = new AddConnectorCommand();
@@ -778,7 +772,21 @@ export class AppComponent implements OnInit, AfterViewInit{
     }
   }
 
+  private createNode(height: number, width: number, position: PointModel, shape: any) {
+    var addNodeCommand = new AddNodeCommand();
+    addNodeCommand.whiteBoardId = this.whiteBoard.id;
+    addNodeCommand.height = height;
+    addNodeCommand.width = width;
+    addNodeCommand.position = position;
+    addNodeCommand.shape = shape;
+    //addNodeCommand.shape = {type: $event.element.shape.type, shape: ($event.element.shape as FlowShapeModel).shape};
+    this.httpClient.post(Configuration.addNodeApi(), addNodeCommand).subscribe(res => {
+      this.getWhiteBoard(this.whiteBoard.id);
+    });
+  }
+
   onTextEdit($event: ITextEditEventArgs) {
+    console.log('Text Edit');
     if($event.element instanceof Node) {
       const command = new AddNodeAnnotationCommand();
       command.whiteBoardId = this.whiteBoard.id;
@@ -835,6 +843,19 @@ export class AppComponent implements OnInit, AfterViewInit{
 
   onTargetPointChange($event: IEndChangeEventArgs) {
     this.targetPointChangedEvent$.next($event);
+  }
+
+  onPropertyChange($event: any) {
+    console.log($event);
+  }
+
+  onElementDraw($event: IElementDrawEventArgs) {
+    console.log("Drawing: ", $event);
+    if($event.state === 'Completed') {
+      if($event.source instanceof Node) {
+        this.createNode($event.source.height, $event.source.width, {x: $event.source.offsetX, y: $event.source.offsetY}, {type: $event.source.shape.type, shape: ($event.source.shape as FlowShapeModel).shape});
+      }
+    }
   }
 }
 
