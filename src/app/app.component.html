@@ -114,6 +114,7 @@
                      (mouseLeave)="onMouseLeave($event)"
                      (propertyChange)="onPropertyChange($event)"
                      (elementDraw)="onElementDraw($event)"
+                     (click)="onDiagramClick($event)"
         >
           <e-nodes>
             <e-node *ngFor="let node of whiteBoard?.nodes" [height]='node.height' [width]='node.width' [offsetX]='node.position.x'

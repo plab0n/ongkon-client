@@ -12,6 +12,7 @@ export class AddNodeCommand {
   position: PointModel;
   public width: number;
   public height: number;
+  public text: string;
 }
 export class AddNodeAnnotationCommand {
   whiteBoardId: string;

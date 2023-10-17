@@ -4,7 +4,7 @@ import {
   DiagramClickEventObject,
   DiagramComponent,
   DiagramMouseEventObject,
-  DiagramTools,
+  DiagramTools, IClickEventArgs,
   ICollectionChangeEventArgs,
   IDraggingEventArgs,
   IDropEventArgs, IElement, IElementDrawEventArgs,
@@ -15,7 +15,7 @@ import {
   ISelectionChangeEventArgs,
   ITextEditEventArgs,
   NodeConstraints, PointModel,
-  SelectorModel, Shape,
+  SelectorModel, Shape, ShapeModel, TextModel,
   ZoomOptions
 } from "@syncfusion/ej2-angular-diagrams";
 import {
@@ -82,6 +82,7 @@ export class AppComponent implements OnInit, AfterViewInit{
   nodePositionChangedEvent$ = new Subject<IDraggingEventArgs>();
   connectorPositionChangedEvent$ = new Subject<IDraggingEventArgs>();
   private currentSelection: SelectorModel | Diagram | DiagramClickEventObject | Object | DiagramMouseEventObject | NodeModel | IElement;
+  private currentTextBox: any;
 
   constructor(private httpClient: HttpClient,
               private router: Router) {​​​​​​​
@@ -164,7 +165,6 @@ export class AppComponent implements OnInit, AfterViewInit{
     }
   }
   public created(): void {
-    this.diagram.pageSettings.fitOptions.canFit = false;
     this.diagram.fitToPage({canZoomIn: false, mode: "Height", margin: {bottom: 0, left:0, top:0, right: 0}});
     this.addNodeAnnotations();
   }
@@ -448,7 +448,7 @@ export class AppComponent implements OnInit, AfterViewInit{
       case 'Text Tool':
         this.diagram.clearSelection();
         this.diagram.selectedItems.userHandles = [];
-        this.diagram.drawingObject = { shape: { type: 'Text' }, };
+        this.diagram.drawingObject = { shape: { type: 'Text' }};
         this.diagram.tool = DiagramTools.ContinuousDraw;
         break;
       case 'Pan Tool':
@@ -550,8 +550,8 @@ export class AppComponent implements OnInit, AfterViewInit{
 
   public shapesItems = [
     {text: 'Rectangle',iconCss: 'e-rectangle e-icons'},
-    {text: 'Ellipse',iconCss: ' e-circle e-icons'},
-    {text: 'Polygon',iconCss: 'e-line e-icons'}
+
+    {text: 'Ellipse',iconCss: ' e-circle e-icons'}, {text: 'Polygon',iconCss: 'e-line e-icons'}
   ];
 
   public onShapesSelect(args : any){
@@ -772,13 +772,14 @@ export class AppComponent implements OnInit, AfterViewInit{
     }
   }
 
-  private createNode(height: number, width: number, position: PointModel, shape: any) {
+  private createNode(height: number, width: number, position: PointModel, shape: any, text: string = '') {
     var addNodeCommand = new AddNodeCommand();
     addNodeCommand.whiteBoardId = this.whiteBoard.id;
     addNodeCommand.height = height;
     addNodeCommand.width = width;
     addNodeCommand.position = position;
     addNodeCommand.shape = shape;
+    addNodeCommand.text = text;
     //addNodeCommand.shape = {type: $event.element.shape.type, shape: ($event.element.shape as FlowShapeModel).shape};
     this.httpClient.post(Configuration.addNodeApi(), addNodeCommand).subscribe(res => {
       this.getWhiteBoard(this.whiteBoard.id);
@@ -855,6 +856,19 @@ export class AppComponent implements OnInit, AfterViewInit{
       if($event.source instanceof Node) {
         this.createNode($event.source.height, $event.source.width, {x: $event.source.offsetX, y: $event.source.offsetY}, {type: $event.source.shape.type, shape: ($event.source.shape as FlowShapeModel).shape});
       }
+    }
+  }
+
+  onDiagramClick($event: IClickEventArgs) {
+    //debugger
+    if(!this.currentTextBox && $event.actualObject instanceof Node) {
+      this.currentTextBox = $event.actualObject;
+    }
+    if(this.currentTextBox && $event.element instanceof Node) {
+      if((this.currentTextBox.shape as TextModel).content.length > 0) {
+        this.createNode(this.currentTextBox.height, this.currentTextBox.width, {x: this.currentTextBox.offsetX, y: this.currentTextBox.offsetY}, {type: this.currentTextBox.shape.type, shape: 'Rect'},  (this.currentTextBox.shape as TextModel).content);
+      }
+      this.currentTextBox = $event.actualObject;
     }
   }
 }
