@@ -38,14 +38,16 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatInputModule} from "@angular/material/input";
 import {FormsModule} from "@angular/forms";
 import {MatButtonModule} from "@angular/material/button";
+import { WhiteboardContainerComponent } from './components/whiteboard-container/whiteboard-container.component';
+import {AppRoutingModule} from "./app-routing.module";
 
 @NgModule({
-  declarations: [ AppComponent, WhiteboardInfoDialogComponent ],
+  declarations: [ AppComponent, WhiteboardInfoDialogComponent, WhiteboardContainerComponent ],
   imports: [ DiagramAllModule, ChartAllModule, GridAllModule, SymbolPaletteAllModule, OverviewAllModule, ButtonModule,
     ColorPickerModule,  DateRangePickerModule, CheckBoxModule, AccumulationChartModule, BrowserModule,ToolbarModule,
     DropDownButtonModule, UploaderModule, CircularGaugeModule, DropDownListAllModule, ListViewAllModule,
     DialogAllModule, TextBoxModule, RadioButtonModule, MultiSelectModule, NumericTextBoxModule, BrowserModule, SplitButtonModule,
-    HttpClientModule, BrowserAnimationsModule, MatDialogModule, MatFormFieldModule, MatInputModule, FormsModule, MatButtonModule
+    HttpClientModule, BrowserAnimationsModule, MatDialogModule, MatFormFieldModule, MatInputModule, FormsModule, MatButtonModule, AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,0 +1,147 @@
+<script src="script/diagram-common.ts"></script>
+<style>
+  .e-symbolpalette {
+    display: block;
+  }
+
+</style>
+<div *ngIf="whiteBoard"  class="control-section">
+  <div style="width: 100%">
+    <ejs-toolbar #toolbar overflowMode='Scrollable' id="toolbar_scrollable" (clicked) = "clicked($event)">
+      <e-items>
+        <e-item prefixIcon='e-icons e-circle-add' tooltipText='New Diagram'></e-item>
+        <!--        <e-item prefixIcon='e-icons e-folder-open' tooltipText='Open Diagram'>-->
+        <!--        </e-item>-->
+        <!--        <e-item prefixIcon='e-icons e-save' tooltipText='Save Diagram'></e-item>-->
+        <!--        <e-item prefixIcon='e-print e-icons' tooltipText='Print Diagram'></e-item>-->
+        <!--        <e-item type='Input' tooltipText='Export Diagram'>-->
+        <!--          <ng-template #template>-->
+        <!--            <ejs-splitbutton [items]='items' iconCss="e-export e-icons" (select)='addDisabled($event)'></ejs-splitbutton>-->
+        <!--          </ng-template>-->
+        <!--        </e-item>-->
+        <!--        <e-item type='Separator'></e-item>-->
+        <!--        <e-item prefixIcon='e-cut e-icons' tooltipText='Cut' cssClass="tb-item-middle tb-item-lock-category" disabled=true></e-item>-->
+        <!--        <e-item prefixIcon='e-copy e-icons' tooltipText='Copy' cssClass="tb-item-middle tb-item-lock-category" disabled=true></e-item>-->
+        <!--        <e-item prefixIcon='e-icons e-paste' tooltipText='Paste' disabled=true></e-item>-->
+        <e-item type='Separator'></e-item>
+        <e-item prefixIcon='e-icons e-undo tb-icons' tooltipText='Undo' disabled=true></e-item>
+        <e-item prefixIcon='e-icons e-redo tb-icons' tooltipText='Redo' disabled=true></e-item>
+        <e-item type='Separator'></e-item>
+        <e-item prefixIcon='e-pan e-icons' tooltipText='Pan Tool' cssClass ='tb-item-start pan-item'></e-item>
+        <e-item prefixIcon='e-mouse-pointer e-icons' tooltipText='Select Tool' cssClass ='tb-item-middle tb-item-selected'></e-item>
+        <e-item  tooltipText='Draw Connectors'>
+          <ng-template #template>
+            <ejs-splitbutton [items]='conTypeItems' iconCss="e-ddb-icons e-connector e-icons" (select)='onConnectorSelect($event)'></ejs-splitbutton>
+          </ng-template>
+        </e-item>
+        <e-item  tooltipText='Draw Shapes' >
+          <ng-template #template>
+            <ejs-splitbutton [items]='shapesItems' iconCss="e-shapes e-icons" (select)='onShapesSelect($event)'></ejs-splitbutton>
+          </ng-template>
+        </e-item>
+        <e-item prefixIcon='e-caption e-icons' tooltipText='Text Tool' cssClass='tb-item-end'></e-item>
+        <!--        <e-item type='Separator'></e-item>-->
+        <!--        <e-item disabled=true  prefixIcon= 'e-icons e-lock' tooltipText= 'Lock' cssClass='tb-item-middle tb-item-lock-category'></e-item>-->
+        <!--        <e-item disabled=true  prefixIcon= 'e-trash e-icons' tooltipText= 'Delete'cssClass='tb-item-middle tb-item-lock-category'></e-item>-->
+        <!--        <e-item type='Separator'></e-item>-->
+        <!--        <e-item disabled=true  type= 'Input' tooltipText= 'Align Objects'>-->
+        <!--          <ng-template #template>-->
+        <!--            <ejs-splitbutton [items]='alignItems' iconCss="sf-icon-align-center-1" (select)='onSelectAlignObjects($event)'></ejs-splitbutton>-->
+        <!--          </ng-template>-->
+        <!--        </e-item>-->
+        <!--        <e-item disabled=true  type= 'Input' tooltipText= 'Distribute Objects'>-->
+        <!--          <ng-template #template>-->
+        <!--            <ejs-splitbutton [items]='distributeItems' iconCss="sf-icon-distribute-vertical" (select)='onSelectDistributeObjects($event)'></ejs-splitbutton>-->
+        <!--          </ng-template>-->
+        <!--        </e-item>-->
+        <!--        <e-item type='Separator'></e-item>-->
+        <!--        <e-item disabled=true  type= 'Input' tooltipText= 'Order Commands'>-->
+        <!--          <ng-template #template>-->
+        <!--            <ejs-splitbutton [items]='orderItems' iconCss="e-icons e-order" (select)='onSelectOrder($event)'></ejs-splitbutton>-->
+        <!--          </ng-template>-->
+        <!--        </e-item>-->
+        <!--        <e-item type='Separator'></e-item>-->
+        <!--        <e-item disabled=true  type= 'Input' tooltipText= 'Group/Ungroup' >-->
+        <!--          <ng-template #template>-->
+        <!--            <ejs-splitbutton [items]='groupItems' iconCss="e-icons e-group-1" (select)='onSelectGroup($event)'></ejs-splitbutton>-->
+        <!--          </ng-template>-->
+        <!--        </e-item>-->
+        <!--        <e-item type='Separator'></e-item>-->
+        <!--        <e-item disabled=true  type= 'Input' tooltipText= 'Rotate' >-->
+        <!--          <ng-template #template>-->
+        <!--            <ejs-splitbutton [items]='rotateItems' iconCss="e-icons e-repeat" (select)='onSelectRotate($event)'></ejs-splitbutton>-->
+        <!--          </ng-template>-->
+        <!--        </e-item>-->
+        <!--        <e-item type='Separator'></e-item>-->
+        <!--        <e-item disabled=true  type= 'Input' tooltipText= 'Flip' >-->
+        <!--          <ng-template #template>-->
+        <!--            <ejs-splitbutton [items]='flipItems' iconCss="e-icons e-flip-horizontal" (select)='onSelectFlip($event)'></ejs-splitbutton>-->
+        <!--          </ng-template>-->
+        <!--        </e-item>-->
+        <!--        <e-item type='Separator'></e-item>-->
+        <e-item>
+          <ng-template #template>
+            <ejs-splitbutton [items]='zoomMenuItems' [content]="zoomContent()" (select)='zoomChange($event)'></ejs-splitbutton>
+          </ng-template>
+        </e-item>
+
+      </e-items>
+    </ejs-toolbar>
+    <div class="sb-mobile-palette-bar">
+      <div id="palette-icon" style="float: right;" role="button" class="e-ddb-icons1 e-toggle-palette"></div>
+    </div>
+    <div id="palette-space" class="sb-mobile-palette">
+      <ejs-symbolpalette id="symbolpalette" [expandMode]='expandMode' [palettes]='palettes' width="100%" height="700px" [symbolHeight]=60 [symbolWidth]=60 [symbolMargin]='symbolMargin' [getSymbolInfo]='getSymbolInfo' [getNodeDefaults]='getSymbolDefaults'>
+      </ejs-symbolpalette>
+    </div>
+    <div id="diagram-space" class="sb-mobile-diagram">
+      <div class="content-wrapper">
+        <ejs-diagram #diagram id="diagram" width="100%" height="700px" [snapSettings]='snapSettings'
+                     (sourcePointChange)="onSourcePointChange($event)"
+                     (targetPointChange)="onTargetPointChange($event)"
+                     (created)="created()"
+                     [getConnectorDefaults]='connDefaults'
+                     [getNodeDefaults]='nodeDefaults'
+                     (dragEnter)="dragEnter($event)"
+                     (positionChange)="onPositionChange($event)"
+                     (created)="diagramCreate($event)"
+                     (selectionChange)="selectionChange($event)"
+                     (historyChange)="historyChange($event)"
+                     (drop)="onDropSymbol($event)"
+                     [drawingObject] ="drawingObject"
+                     (textEdit)="onTextEdit($event)"
+                     (mouseOver)="onMouseOver($event)"
+                     (mouseLeave)="onMouseLeave($event)"
+                     (propertyChange)="onPropertyChange($event)"
+                     (elementDraw)="onElementDraw($event)"
+                     (click)="onDiagramClick($event)"
+        >
+          <e-nodes>
+            <e-node *ngFor="let node of whiteBoard?.nodes" [height]='node.height' [width]='node.width' [offsetX]='node.position.x'
+                    [offsetY]='node.position.y' [shape]='node.shape' id="{{node.id}}">
+              <e-node-annotations>
+                <e-node-annotation content='{{node.text}}'>
+                </e-node-annotation>
+              </e-node-annotations>
+            </e-node>
+          </e-nodes>
+          <e-connectors>
+            <e-connector *ngFor="let connector of whiteBoard.connectors" [sourcePoint]="{x: connector.sourcePoint.x, y: connector.sourcePoint.y}"
+                         [targetPoint]="{x: connector.targetPoint.x, y: connector.targetPoint.y}"
+                         id='{{connector.id}}'>
+            </e-connector>
+            <!--            <e-connector id='connector4' sourceID='Project' targetID='End'>-->
+            <!--              <e-connector-annotations>-->
+            <!--                <e-connector-annotation content='Yes' [style]=connAnnotStyle>-->
+            <!--                </e-connector-annotation>-->
+            <!--              </e-connector-annotations>-->
+            <!--            </e-connector>-->
+          </e-connectors>
+        </ejs-diagram>
+      </div>
+      <!--      <div style="display:none;">-->
+      <!--        <ejs-uploader #defaultupload id='fileupload' (success)='onUploadSuccess($event)' [asyncSettings]='asyncSettings'></ejs-uploader>-->
+      <!--      </div>-->
+    </div>
+  </div>
+</div>
