@@ -26,19 +26,12 @@ import {DropDownButtonModule, SplitButtonModule} from '@syncfusion/ej2-angular-s
 
 import { ButtonModule, CheckBoxModule, RadioButtonModule } from '@syncfusion/ej2-angular-buttons';
 
-import { HttpModule } from '@angular/http';
-
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
-import { RouterModule } from '@angular/router';
-
-import { CommonModule } from '@angular/common';
-
 import { BrowserModule } from '@angular/platform-browser';
 
 import { NgModule } from '@angular/core';
 import {AppComponent} from "./app.component";
 import {HttpClient, HttpClientModule} from "@angular/common/http";
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [ AppComponent ],
@@ -46,7 +39,8 @@ import {HttpClient, HttpClientModule} from "@angular/common/http";
     ColorPickerModule,  DateRangePickerModule, CheckBoxModule, AccumulationChartModule, BrowserModule,ToolbarModule,
     DropDownButtonModule, UploaderModule, CircularGaugeModule, DropDownListAllModule, ListViewAllModule,
     DialogAllModule, TextBoxModule, RadioButtonModule, MultiSelectModule, NumericTextBoxModule, BrowserModule, SplitButtonModule,
-    HttpClientModule
+    HttpClientModule,
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
