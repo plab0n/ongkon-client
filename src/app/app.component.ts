@@ -883,8 +883,8 @@ export class AppComponent implements OnInit, AfterViewInit{
     });
     dialogRef.afterClosed().subscribe(res => {
       console.log('DialogResponse', res);
-      this.httpClient.post(Configuration.createEmptyWhiteBoardApi(), new CreateWhiteBoardCommand("N1")).subscribe(res => {
-        console.log(res);
+      this.httpClient.post(Configuration.createEmptyWhiteBoardApi(), new CreateWhiteBoardCommand(res.whiteBoardTitle, res.userName)).subscribe((response: any) => {
+        this.getWhiteBoard(response.id);
       });
     });
   }

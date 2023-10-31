@@ -1,8 +1,10 @@
 import {DecoratorModel, PointModel, StrokeStyleModel, Point} from "@syncfusion/ej2-diagrams";
 export class CreateWhiteBoardCommand{
   title: string;
-  constructor(title: string) {
+  userName: string;
+  constructor(title: string, userName: string) {
     this.title = title;
+    this.userName = userName;
   }
 }
 
