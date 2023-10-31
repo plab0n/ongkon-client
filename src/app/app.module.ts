@@ -32,15 +32,20 @@ import { NgModule } from '@angular/core';
 import {AppComponent} from "./app.component";
 import {HttpClient, HttpClientModule} from "@angular/common/http";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { WhiteboardInfoDialogComponent } from './components/whiteboard-info-dialog/whiteboard-info-dialog.component';
+import {MatDialog, MatDialogModule} from "@angular/material/dialog";
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatInputModule} from "@angular/material/input";
+import {FormsModule} from "@angular/forms";
+import {MatButtonModule} from "@angular/material/button";
 
 @NgModule({
-  declarations: [ AppComponent ],
+  declarations: [ AppComponent, WhiteboardInfoDialogComponent ],
   imports: [ DiagramAllModule, ChartAllModule, GridAllModule, SymbolPaletteAllModule, OverviewAllModule, ButtonModule,
     ColorPickerModule,  DateRangePickerModule, CheckBoxModule, AccumulationChartModule, BrowserModule,ToolbarModule,
     DropDownButtonModule, UploaderModule, CircularGaugeModule, DropDownListAllModule, ListViewAllModule,
     DialogAllModule, TextBoxModule, RadioButtonModule, MultiSelectModule, NumericTextBoxModule, BrowserModule, SplitButtonModule,
-    HttpClientModule,
-    BrowserAnimationsModule
+    HttpClientModule, BrowserAnimationsModule, MatDialogModule, MatFormFieldModule, MatInputModule, FormsModule, MatButtonModule
   ],
   providers: [],
   bootstrap: [AppComponent]

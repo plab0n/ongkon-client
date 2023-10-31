@@ -58,6 +58,8 @@ import {WhiteBoard} from "../Models/white-board";
 import {debounce, interval, Observable, Subject} from "rxjs";
 import {debounceTime, distinctUntilChanged, last, takeLast} from "rxjs/operators";
 import {Position} from "@syncfusion/ej2-base";
+import {MatDialog} from "@angular/material/dialog";
+import {WhiteboardInfoDialogComponent} from "./components/whiteboard-info-dialog/whiteboard-info-dialog.component";
 Diagram.Inject(UndoRedo);
 
 /**
@@ -85,15 +87,13 @@ export class AppComponent implements OnInit, AfterViewInit{
   private currentTextBox: any;
 
   constructor(private httpClient: HttpClient,
-              private router: Router) {​​​​​​​
+              private router: Router,
+              private dialog: MatDialog) {​​​​​​​
     //sourceFiles.files = ['../script/diagram-common.style.css'];
   }​​​​​​​
 
   ngOnInit(): void {
-    // this.httpClient.post(Configuration.createEmptyWhiteBoardApi(), new CreateWhiteBoardCommand("N1")).subscribe(res => {
-    //   console.log(res);
-    // });
-    this.getWhiteBoard('37a48b71-5457-4650-815b-ff2ffec71f58');
+    this.openWhiteBoardInfoDialog();
     this.sourcePointChangedEvent$.pipe(debounceTime(500)).subscribe((event: IEndChangeEventArgs) => {
       const command = new UpdateConnectorSourcePointCommand();
       command.whiteBoardId = this.whiteBoard.id;
@@ -870,6 +870,23 @@ export class AppComponent implements OnInit, AfterViewInit{
       }
       this.currentTextBox = $event.actualObject;
     }
+  }
+
+  private openWhiteBoardInfoDialog() {
+    const dialogRef = this.dialog.open(WhiteboardInfoDialogComponent, {
+      disableClose: true,
+      height: '230px',
+      width: '220px',
+      data: {
+
+      }
+    });
+    dialogRef.afterClosed().subscribe(res => {
+      console.log('DialogResponse', res);
+      this.httpClient.post(Configuration.createEmptyWhiteBoardApi(), new CreateWhiteBoardCommand("N1")).subscribe(res => {
+        console.log(res);
+      });
+    });
   }
 }
 
